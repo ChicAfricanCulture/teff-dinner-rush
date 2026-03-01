@@ -1,3 +1,4 @@
+<!-- /index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,78 +6,92 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Teff Texture Trap — Dinner Rush | SankofaKitchen</title>
   <style>
-    :root {
-      --bg: #efe4cf;
-      --ui: rgba(0,0,0,0.82);
-      --ui2: rgba(255,255,255,0.10);
-      --text: #ffffff;
+    :root{
+      --bg:#efe4cf;
+      --ui:rgba(0,0,0,0.86);
+      --ui2:rgba(255,255,255,0.10);
+      --text:#ffffff;
     }
-    body { margin:0; overflow:hidden; background:var(--bg); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
-    canvas { display:block; cursor:grab; touch-action:none; }
-    canvas:active { cursor:grabbing; }
-    #ui {
+    body{ margin:0; overflow:hidden; background:var(--bg); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    canvas{ display:block; cursor:grab; touch-action:none; }
+    canvas:active{ cursor:grabbing; }
+
+    #ui{
       position:absolute; left:10px; top:10px; z-index:10;
       background:var(--ui); color:var(--text);
       padding:12px 14px; border-radius:14px;
       max-width:min(620px, calc(100vw - 20px));
-      box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+      box-shadow:0 14px 40px rgba(0,0,0,0.38);
+      border:1px solid rgba(255,255,255,0.12);
       user-select:none;
-      border: 1px solid rgba(255,255,255,0.10);
     }
-    #row1 { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
-    .pill { padding:5px 9px; border-radius:999px; background: var(--ui2); border: 1px solid rgba(255,255,255,0.08); }
-    .label { opacity:0.9; font-weight:700; }
-    #barWrap, #readyWrap {
-      margin-top:10px; width:300px; height:12px;
-      background: rgba(255,255,255,0.14);
+    #row1{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    .pill{ padding:5px 9px; border-radius:999px; background:var(--ui2); border:1px solid rgba(255,255,255,0.10); }
+    .label{ opacity:0.9; font-weight:800; }
+
+    #barWrap,#readyWrap{
+      margin-top:10px; width:320px; height:12px;
+      background:rgba(255,255,255,0.14);
       border-radius:999px; overflow:hidden;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-    #instabilityBar { height:100%; width:0%; background: linear-gradient(90deg, #66ff99, #ffd166, #ff4d4d); }
-    #readyBar { height:100%; width:0%; background: linear-gradient(90deg, #7CFC00, #00D4FF); }
-    #msg { margin-top:10px; opacity:0.98; line-height:1.25; font-weight:800; letter-spacing:0.2px; }
-    #hint { opacity:0.9; margin-top:6px; font-size:13px; line-height:1.35; }
-    #controls { margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; }
-    button {
       border:1px solid rgba(255,255,255,0.10);
-      border-radius:12px; padding:9px 11px; cursor:pointer;
-      background: rgba(255,255,255,0.14); color:#fff;
     }
-    button:hover { background: rgba(255,255,255,0.22); }
-    #back {
+    #instabilityBar{ height:100%; width:0%; background:linear-gradient(90deg,#66ff99,#ffd166,#ff4d4d); }
+    #readyBar{ height:100%; width:0%; background:linear-gradient(90deg,#7CFC00,#00D4FF); }
+
+    #msg{ margin-top:10px; font-weight:900; letter-spacing:0.2px; line-height:1.25; }
+    #hint{ margin-top:6px; opacity:0.92; font-size:13px; line-height:1.35; }
+
+    #controls{ margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; }
+    button{
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:12px; padding:9px 11px; cursor:pointer;
+      background:rgba(255,255,255,0.14); color:#fff;
+    }
+    button:hover{ background:rgba(255,255,255,0.22); }
+    .primary{ background:rgba(124,252,0,0.20); }
+    .primary:hover{ background:rgba(124,252,0,0.30); }
+    .danger{ background:rgba(255,77,77,0.22); }
+    .danger:hover{ background:rgba(255,77,77,0.32); }
+
+    #back{
       position:absolute; top:10px; right:10px; z-index:10;
       color:#fff; text-decoration:none; background:var(--ui);
       padding:9px 11px; border-radius:12px;
-      border: 1px solid rgba(255,255,255,0.10);
+      border:1px solid rgba(255,255,255,0.12);
     }
-    #intro {
+
+    /* Intro overlay */
+    #intro{
       position:fixed; inset:0; z-index:50;
       display:flex; align-items:center; justify-content:center;
-      background: radial-gradient(circle at 30% 20%, rgba(0,0,0,0.78), rgba(0,0,0,0.94));
+      background:radial-gradient(circle at 30% 20%, rgba(0,0,0,0.80), rgba(0,0,0,0.95));
       color:#fff;
       padding:20px;
     }
-    #introCard {
-      width:min(760px, 96vw);
+    #introCard{
+      width:min(780px, 96vw);
       border-radius:18px;
-      background: rgba(0,0,0,0.72);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.50);
+      background:rgba(0,0,0,0.78);
+      box-shadow:0 20px 70px rgba(0,0,0,0.55);
       padding:18px 18px 14px 18px;
-      border: 1px solid rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.12);
     }
-    #introTitle { font-size:22px; font-weight:900; letter-spacing:0.3px; }
-    #introText { margin-top:10px; line-height:1.55; opacity:0.96; font-size:14px; }
-    #introList { margin-top:10px; opacity:0.95; font-size:14px; line-height:1.5; }
-    #introList li { margin:6px 0; }
-    #introBtns { margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; }
-    .primary { background: rgba(124,252,0,0.22); }
-    .primary:hover { background: rgba(124,252,0,0.32); }
-    .danger { background: rgba(255,77,77,0.22); }
-    .danger:hover { background: rgba(255,77,77,0.32); }
+    #introTitle{ font-size:22px; font-weight:950; letter-spacing:0.3px; }
+    #introText{ margin-top:10px; line-height:1.55; opacity:0.98; font-size:14px; }
+    #introList{ margin-top:10px; opacity:0.96; font-size:14px; line-height:1.5; }
+    #introList li{ margin:6px 0; }
+    #introBtns{ margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; }
+
+    /* Small accessibility tweak */
+    @media (max-width: 420px){
+      #barWrap,#readyWrap{ width:260px; }
+      #ui{ padding:10px 12px; }
+    }
   </style>
 </head>
 <body>
   <canvas id="c"></canvas>
+
   <div id="ui">
     <div id="row1">
       <span class="pill"><span class="label">Wave</span>: <b id="wave">1</b></span>
@@ -86,17 +101,20 @@
       <span class="pill"><span class="label">Dinner ETA</span>: <b id="time">90</b>s</span>
       <span class="pill"><span class="label">Batches</span>: <b id="batches">0</b></span>
     </div>
+
     <div id="barWrap" title="Instability (spoilage/overload)">
       <div id="instabilityBar"></div>
     </div>
     <div id="readyWrap" title="Batch Ready (finish one teff bread batch)">
       <div id="readyBar"></div>
     </div>
+
     <div id="msg">Your family is arriving. Finish the batch and keep it stable.</div>
     <div id="hint">
       Drag texture tags into matching stations. Correct streaks raise your combo multiplier.
       Mistakes spike instability. At 100, the batch collapses.
     </div>
+
     <div id="controls">
       <button id="btnStart" class="primary">Start</button>
       <button id="btnRestart">Restart</button>
@@ -105,10 +123,11 @@
       <button id="btnStory">Story</button>
     </div>
   </div>
+
   <a id="back" href="https://github.com/ChicAfricanCulture">← Back</a>
 
   <div id="intro">
-    <div id="introCard">
+    <div id="introCard" role="dialog" aria-modal="true">
       <div id="introTitle">Teff Texture Trap — Dinner Rush</div>
       <div id="introText">
         Family is coming over for dinner. It’s your first time making teff bread on your own.
@@ -132,6 +151,7 @@
 (() => {
   const canvas = document.getElementById('c');
   const ctx = canvas.getContext('2d', { alpha: false });
+
   const ui = {
     wave: document.getElementById('wave'),
     score: document.getElementById('score'),
@@ -148,41 +168,645 @@
     btnSound: document.getElementById('btnSound'),
     btnStory: document.getElementById('btnStory'),
   };
+
   const intro = document.getElementById('intro');
   const btnPlayFromIntro = document.getElementById('btnPlayFromIntro');
   const btnSkipIntro = document.getElementById('btnSkipIntro');
   const btnHard = document.getElementById('btnHard');
 
-  // ... (the rest of the script logic remains the same as your original full version)
-  // For brevity in this message I'm not re-pasting the 400+ line script again, but you MUST include the ENTIRE script block from your previous working version.
-  // Key fixes are already in the event listeners at the bottom:
+  const stages = [
+    { name:'Whole',   color:'#8B4513', size:8,   bubbles:false },
+    { name:'Cracked', color:'#A0522D', size:6,   bubbles:false },
+    { name:'Coarse',  color:'#D2691E', size:4,   bubbles:false },
+    { name:'Fine',    color:'#F4A460', size:2,   bubbles:false },
+    { name:'Batter',  color:'#DEB887', size:1.6, bubbles:true  },
+  ];
 
-  function closeIntroRemember() { 
-    intro.style.display = 'none';  // Use style instead of hidden for reliability
-    localStorage.setItem('teffSeenIntro', '1'); 
+  const powerups = [
+    { key:'FREEZE',  label:'FREEZE',  color:'#9ad7ff', effect:'freeze'  },
+    { key:'CLEANSE', label:'CLEANSE', color:'#b6ff9a', effect:'cleanse' },
+    { key:'SIEVE',   label:'SIEVE',   color:'#e7d7ff', effect:'sieve'   },
+  ];
+
+  // ---- State
+  let W = 0, H = 0, DPR = 1;
+  let zones = [];
+  let words = [];
+  let particles = [];
+  let dragging = null;
+
+  let running = false;
+  let paused = false;
+  let gameOver = false;
+
+  let wave = 1;
+  let score = 0;
+  let combo = 0;
+  let timeLeft = 90;
+  let batchesMade = 0;
+
+  let batchReady = 0;
+  let instability = 0;
+
+  let waveClock = 0;
+  let slowMo = 0;
+  let freeze = 0;
+  let sieveCharge = 0;
+
+  let shake = 0;
+  let flash = 0;
+  let lastNow = 0;
+  let hardMode = false;
+
+  // Sound (no assets)
+  let soundOn = false;
+  let audioCtx = null;
+
+  // ---- Helpers
+  const clamp = (n,a,b) => Math.max(a, Math.min(b,n));
+  const rand = (a,b) => a + Math.random()*(b-a);
+  const pick = (arr) => arr[(Math.random()*arr.length)|0];
+
+  function beep(freq=440, dur=0.06, type='sine', gain=0.05) {
+    if (!soundOn) return;
+    audioCtx ??= new (window.AudioContext || window.webkitAudioContext)();
+    const t0 = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    g.gain.value = gain;
+    osc.connect(g); g.connect(audioCtx.destination);
+    osc.start(t0);
+    osc.stop(t0 + dur);
   }
 
-  btnPlayFromIntro.addEventListener('click', () => {
-    closeIntroRemember();
-    reset();
+  function setMessage(t){ ui.msg.textContent = t; }
+
+  function resize(){
+    DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    W = canvas.width = Math.floor(window.innerWidth * DPR);
+    H = canvas.height = Math.floor(window.innerHeight * DPR);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    computeZones();
+  }
+  window.addEventListener('resize', resize);
+
+  function computeZones(){
+    zones = [];
+    const pad = 14 * DPR;
+    const barY = H - 102 * DPR;
+    const zH = 64 * DPR;
+    const count = stages.length;
+    const available = W - pad * (count + 1);
+    const zW = Math.max(120 * DPR, Math.floor(available / count));
+    for (let i=0;i<count;i++){
+      const x = pad + i*(zW + pad);
+      zones.push({ x, y: barY, w: zW, h: zH, stage: stages[i] });
+    }
+  }
+
+  function pointerPos(e){
+    const r = canvas.getBoundingClientRect();
+    const cx = ('touches' in e && e.touches.length) ? e.touches[0].clientX : e.clientX;
+    const cy = ('touches' in e && e.touches.length) ? e.touches[0].clientY : e.clientY;
+    return { x:(cx - r.left) * (W / r.width), y:(cy - r.top) * (H / r.height) };
+  }
+
+  function spawnWord(type='stage'){
+    if (type === 'power'){
+      const p = pick(powerups);
+      return { kind:'power', power:p, text:p.label,
+        x: rand(140*DPR, W - 140*DPR),
+        y: rand(170*DPR, Math.max(180*DPR, H*0.45)),
+        vx: rand(-1.2, 1.2), vy: rand(-1.0, 1.0),
+        born: performance.now()
+      };
+    }
+    const s = pick(stages);
+    return { kind:'stage', stage:s, text:s.name,
+      x: rand(140*DPR, W - 140*DPR),
+      y: rand(170*DPR, Math.max(180*DPR, H*0.45)),
+      vx: rand(-1.2, 1.2), vy: rand(-1.0, 1.0),
+      born: performance.now()
+    };
+  }
+
+  function fillWords(){
+    const target = clamp(6 + wave, 6, 14);
+    while (words.length < target){
+      const chancePower = (wave >= 2) ? 0.08 : 0.03;
+      words.push(spawnWord(Math.random() < chancePower ? 'power' : 'stage'));
+    }
+  }
+
+  function spawnParticles(x,y, stageLike, good){
+    const s = stageLike?.size ?? 3;
+    const base = good ? 16 : 34 + wave*4;
+    for (let i=0;i<base;i++){
+      particles.push({
+        x, y,
+        vx: rand(-1,1) * (good ? 6 : 10) * DPR,
+        vy: rand(-1,1) * (good ? 6 : 10) * DPR,
+        life: 1,
+        decay: (good ? 0.022 : 0.028) + wave*0.002,
+        r: (s + Math.random()*3) * DPR,
+        color: good ? '#9bffb0' : (stageLike?.color ?? '#ff6b6b'),
+        bubble: !!stageLike?.bubbles && Math.random() > 0.5
+      });
+    }
+    if (particles.length > 2200) particles.splice(0, particles.length - 2200);
+  }
+
+  function textHit(item, x,y){
+    ctx.save();
+    ctx.font = (dragging === item) ? `${26*DPR}px ui-monospace, monospace` : `${20*DPR}px ui-monospace, monospace`;
+    const w = ctx.measureText(item.text).width;
+    ctx.restore();
+    const h = 26*DPR;
+    return x >= item.x - w/2 && x <= item.x + w/2 && y >= item.y - h && y <= item.y + 8*DPR;
+  }
+
+  function zoneAt(x,y){
+    for (const z of zones){
+      const top = z.y - z.h/2;
+      const bot = z.y + z.h/2;
+      if (x >= z.x && x <= z.x + z.w && y >= top && y <= bot) return z;
+    }
+    return null;
+  }
+
+  function perfectDrop(z, x,y){
+    const zx = z.x + z.w/2;
+    const zy = z.y;
+    const tol = Math.min(z.w, z.h) * (hardMode ? 0.14 : 0.18);
+    return Math.abs(x - zx) < tol && Math.abs(y - zy) < tol;
+  }
+
+  function setInstability(delta){
+    instability = clamp(instability + delta, 0, 100);
+    if (delta > 0){
+      flash = clamp(flash + delta*0.012, 0, 0.65);
+      shake = clamp(shake + delta*0.06, 0, 18*DPR);
+    }
+    ui.instabilityBar.style.width = `${instability}%`;
+  }
+
+  function setReady(delta){
+    batchReady = clamp(batchReady + delta, 0, 100);
+    ui.readyBar.style.width = `${batchReady}%`;
+  }
+
+  function multiplierForCombo(c){
+    if (c >= 12) return 5;
+    if (c >= 8) return 4;
+    if (c >= 5) return 3;
+    if (c >= 3) return 2;
+    return 1;
+  }
+
+  function applyPower(power){
+    if (power.effect === 'freeze'){
+      freeze = 3.0;
+      setInstability(-6);
+      setMessage('FREEZE! Steady hands.');
+      beep(400, 0.06, 'sine', 0.05);
+    } else if (power.effect === 'cleanse'){
+      setInstability(-28);
+      setMessage('CLEANSE! The batch calms down.');
+      beep(520, 0.06, 'triangle', 0.05);
+    } else if (power.effect === 'sieve'){
+      sieveCharge = 1;
+      setMessage('SIEVE READY: next mistake forgiven.');
+      beep(600, 0.06, 'triangle', 0.05);
+    }
+  }
+
+  function removeItem(item){
+    const i = words.indexOf(item);
+    if (i >= 0) words.splice(i,1);
+  }
+
+  function waveDurationFor(w){ return clamp(18 - w*0.8, 10, 18); }
+
+  function advanceWave(){
+    wave++;
+    waveClock = 0;
+    setInstability(-22);
+    freeze = Math.max(freeze, 0.6);
+    setMessage(`Wave ${wave} — family is closer. Keep it steady.`);
+  }
+
+  function mutateRandomWord(){
+    const stageWords = words.filter(w => w.kind === 'stage');
+    if (!stageWords.length) return;
+    const w = pick(stageWords);
+    w.stage = pick(stages);
+    w.text = w.stage.name;
+    spawnParticles(w.x, w.y, w.stage, false);
+  }
+
+  function endGame(reason){
+    gameOver = true;
+    running = false;
+    paused = false;
+    dragging = null;
+    setMessage(reason);
+
+    const prevHigh = Number(localStorage.getItem('teffHigh') || 0);
+    if (score > prevHigh) localStorage.setItem('teffHigh', String(score));
+  }
+
+  function reset(){
+    wave = 1; score = 0; combo = 0; timeLeft = 90; batchesMade = 0;
+    batchReady = 0; instability = 0;
+    waveClock = 0; slowMo = 0; freeze = 0; sieveCharge = 0;
+    shake = 0; flash = 0;
+    dragging = null; particles = []; words = [];
+    ui.instabilityBar.style.width = '0%';
+    ui.readyBar.style.width = '0%';
+    fillWords();
+    running = true; paused = false; gameOver = false;
+    ui.btnPause.textContent = 'Pause';
+    setMessage('Family is arriving. Finish the batch and keep it stable.');
+  }
+
+  function onCorrect(item, z, isPerfect){
+    combo++;
+    const mult = multiplierForCombo(combo);
+    score += (10 + wave*2 + (isPerfect ? 8 : 0)) * mult;
+
+    setInstability(-(isPerfect ? 12 : 8));
+    setReady(isPerfect ? 10 : 7);
+    spawnParticles(item.x, item.y, item.stage, true);
+
+    if ([5,8,12].includes(combo)) slowMo = 0.18;
+    beep(isPerfect ? 880 : 660, 0.05, 'triangle', 0.05);
+
+    if (batchReady >= 100){
+      batchesMade++;
+      score += 220 + wave * 40;
+      batchReady = 0;
+      ui.readyBar.style.width = '0%';
+      setInstability(-25);
+      slowMo = 0.25;
+      setMessage(`Batch finished ✅ Tradition honored. (Batches: ${batchesMade})`);
+      advanceWave();
+    } else {
+      setMessage(isPerfect ? 'Perfect placement. The batter steadies.' : 'Good. Keep the flow steady.');
+    }
+  }
+
+  function onWrong(item){
+    if (sieveCharge > 0){
+      sieveCharge = 0;
+      setInstability(-10);
+      setMessage('SIEVE saved you. Try again.');
+      beep(520, 0.07, 'sine', 0.05);
+      return;
+    }
+    combo = 0;
+    setInstability(16 + wave*1.2);
+    setReady(-8);
+    spawnParticles(item.x, item.y, item.stage, false);
+    setMessage('Wrong station! The batch destabilizes.');
+    beep(180, 0.07, 'square', 0.04);
+  }
+
+  function dropAt(x,y){
+    if (!dragging || gameOver || paused || !running) return;
+    const z = zoneAt(x,y);
+    if (!z){ dragging = null; return; }
+
+    if (dragging.kind === 'power'){
+      applyPower(dragging.power);
+      spawnParticles(dragging.x, dragging.y, { color: dragging.power.color, size: 3, bubbles:false }, true);
+      removeItem(dragging);
+      dragging = null;
+      fillWords();
+      return;
+    }
+
+    const isMatch = (dragging.stage === z.stage);
+    const isPerfect = isMatch && perfectDrop(z, x,y);
+
+    if (isMatch) onCorrect(dragging, z, isPerfect);
+    else onWrong(dragging);
+
+    removeItem(dragging);
+    dragging = null;
+    fillWords();
+  }
+
+  // ---- Input
+  let pointerDown = false;
+
+  canvas.addEventListener('mousedown', (e) => {
+    if (!running || paused || gameOver) return;
+    pointerDown = true;
+    const p = pointerPos(e);
+    for (let i=words.length-1;i>=0;i--){
+      if (textHit(words[i], p.x, p.y)){ dragging = words[i]; break; }
+    }
+  });
+
+  canvas.addEventListener('mousemove', (e) => {
+    if (!pointerDown || !dragging) return;
+    const p = pointerPos(e);
+    dragging.x = p.x; dragging.y = p.y;
+  });
+
+  window.addEventListener('mouseup', (e) => {
+    if (!pointerDown) return;
+    pointerDown = false;
+    const p = pointerPos(e);
+    dropAt(p.x, p.y);
+  });
+
+  canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    if (!running || paused || gameOver) return;
+    pointerDown = true;
+    const p = pointerPos(e);
+    for (let i=words.length-1;i>=0;i--){
+      if (textHit(words[i], p.x, p.y)){ dragging = words[i]; break; }
+    }
+  }, { passive:false });
+
+  canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    if (!pointerDown || !dragging) return;
+    const p = pointerPos(e);
+    dragging.x = p.x; dragging.y = p.y;
+  }, { passive:false });
+
+  canvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    if (!pointerDown) return;
+    pointerDown = false;
+    const last = e.changedTouches && e.changedTouches[0];
+    if (!last){ dragging = null; return; }
+    const r = canvas.getBoundingClientRect();
+    dropAt((last.clientX - r.left) * (W / r.width), (last.clientY - r.top) * (H / r.height));
+  }, { passive:false });
+
+  // ---- Buttons
+  ui.btnStart.addEventListener('click', () => {
+    if (gameOver) reset();
     running = true;
     paused = false;
     ui.btnPause.textContent = 'Pause';
     setMessage('Steady hands. Finish a batch before family arrives.');
   });
 
+  ui.btnRestart.addEventListener('click', () => reset());
+
+  ui.btnPause.addEventListener('click', () => {
+    if (!running || gameOver) return;
+    paused = !paused;
+    ui.btnPause.textContent = paused ? 'Resume' : 'Pause';
+    setMessage(paused ? 'Paused.' : 'Back to the kitchen.');
+  });
+
+  ui.btnSound.addEventListener('click', async () => {
+    soundOn = !soundOn;
+    ui.btnSound.textContent = `Sound: ${soundOn ? 'On' : 'Off'}`;
+    if (soundOn){
+      audioCtx ??= new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') await audioCtx.resume();
+      beep(660, 0.05, 'sine', 0.05);
+    }
+  });
+
+  ui.btnStory.addEventListener('click', () => {
+    intro.style.display = 'flex';
+    paused = true;
+    ui.btnPause.textContent = 'Resume';
+  });
+
+  btnHard.addEventListener('click', () => {
+    hardMode = !hardMode;
+    btnHard.textContent = `Hard Mode: ${hardMode ? 'On' : 'Off'}`;
+    setMessage(hardMode ? 'Hard Mode: tighter perfect drops.' : 'Hard Mode off.');
+  });
+
+  function hideIntroRemember(){
+    intro.style.display = 'none';
+    localStorage.setItem('teffSeenIntro', '1');
+  }
+
+  // ✅ Begin: hide + reset + start
+  btnPlayFromIntro.addEventListener('click', () => {
+    hideIntroRemember();
+    reset();
+  });
+
+  // ✅ Close: hide only (does not break state)
   btnSkipIntro.addEventListener('click', () => {
-    closeIntroRemember();
+    hideIntroRemember();
     paused = false;
     ui.btnPause.textContent = 'Pause';
   });
 
-  // In init():
-  // Replace intro.hidden = seen; with:
-  const seen = localStorage.getItem('teffSeenIntro') === '1';
-  intro.style.display = seen ? 'none' : 'flex';
+  // Close overlay on Escape
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && intro.style.display !== 'none'){
+      hideIntroRemember();
+      paused = false;
+      ui.btnPause.textContent = 'Pause';
+    }
+  });
 
-  // Make sure reset() and loop() are called properly in init()
+  // ---- Rendering (high-contrast zone labels)
+  function luminance(hex){
+    const c = hex.replace('#','');
+    const r = parseInt(c.slice(0,2),16)/255;
+    const g = parseInt(c.slice(2,4),16)/255;
+    const b = parseInt(c.slice(4,6),16)/255;
+    const f = (x) => (x <= 0.03928 ? x/12.92 : Math.pow((x+0.055)/1.055, 2.4));
+    return 0.2126*f(r) + 0.7152*f(g) + 0.0722*f(b);
+  }
+
+  function update(dt){
+    if (!running || paused || gameOver) return;
+    dt = clamp(dt, 0, 0.05);
+
+    if (slowMo > 0){ dt *= 0.35; slowMo -= dt; }
+    if (freeze > 0){ dt *= 0.35; freeze -= dt; }
+
+    timeLeft -= dt;
+    if (timeLeft <= 0){
+      endGame(`Family arrived — batch unfinished. Final Score: ${score}`);
+      return;
+    }
+
+    waveClock += dt;
+    if (waveClock >= waveDurationFor(wave)) advanceWave();
+
+    setInstability(dt * (0.7 + wave*0.14 + (hardMode ? 0.25 : 0)));
+
+    const chaos = 1 + wave*0.18 + instability*0.012 + (hardMode ? 0.1 : 0);
+
+    const mutateChance = (instability > 70) ? (0.012 + wave*0.002) : (instability > 55 ? 0.006 : 0.0);
+    if (mutateChance > 0 && Math.random() < mutateChance * dt * 60) mutateRandomWord();
+
+    for (const w of words){
+      if (w === dragging) continue;
+
+      const baseSpeed = (w.kind === 'power') ? 0.95 : 1.0;
+      w.x += w.vx * chaos * baseSpeed * DPR;
+      w.y += w.vy * chaos * baseSpeed * DPR;
+
+      if (instability > 50){
+        w.x += (Math.random()-0.5) * (1.2*DPR);
+        w.y += (Math.random()-0.5) * (1.2*DPR);
+      }
+
+      const minX = 40*DPR, maxX = W - 40*DPR;
+      const minY = 120*DPR, maxY = H - 180*DPR;
+      if (w.x < minX || w.x > maxX) w.vx *= -1;
+      if (w.y < minY || w.y > maxY) w.vy *= -1;
+      w.x = clamp(w.x, minX, maxX);
+      w.y = clamp(w.y, minY, maxY);
+    }
+
+    for (let i=particles.length-1;i>=0;i--){
+      const p = particles[i];
+      p.x += p.vx; p.y += p.vy;
+      p.life -= p.decay * (1 + wave*0.15);
+      p.vx *= 0.985; p.vy *= 0.985;
+      if (p.bubble) p.vy -= 0.12 * DPR;
+      if (p.life <= 0 || p.y > H + 80*DPR) particles.splice(i,1);
+    }
+
+    if (instability >= 100){
+      endGame(`Batch collapsed — you lost the texture. Final Score: ${score}`);
+      return;
+    }
+
+    fillWords();
+
+    ui.wave.textContent = String(wave);
+    ui.score.textContent = String(score);
+    ui.combo.textContent = String(combo);
+    ui.time.textContent = String(Math.ceil(timeLeft));
+    ui.batches.textContent = String(batchesMade);
+
+    const high = Number(localStorage.getItem('teffHigh') || 0);
+    ui.high.textContent = String(Math.max(high, score));
+
+    shake *= 0.90;
+    flash *= 0.86;
+  }
+
+  function draw(){
+    ctx.fillStyle = (wave >= 4) ? '#e3c7a3' : '#efe4cf';
+    ctx.fillRect(0,0,W,H);
+
+    const sx = (Math.random()-0.5) * shake;
+    const sy = (Math.random()-0.5) * shake;
+
+    ctx.save();
+    ctx.translate(sx, sy);
+
+    // Zones
+    for (const z of zones){
+      ctx.fillStyle = z.stage.color;
+      ctx.fillRect(z.x, z.y - z.h/2, z.w, z.h);
+
+      const L = luminance(z.stage.color);
+      const textColor = (L < 0.45) ? '#fff' : '#111';
+      const strokeColor = (L < 0.45) ? 'rgba(0,0,0,0.55)' : 'rgba(255,255,255,0.55)';
+
+      ctx.textAlign = 'center';
+      ctx.font = `900 ${16*DPR}px ui-monospace, monospace`;
+      ctx.lineWidth = 3*DPR;
+      ctx.strokeStyle = strokeColor;
+      ctx.fillStyle = textColor;
+      ctx.strokeText(z.stage.name, z.x + z.w/2, z.y + 6*DPR);
+      ctx.fillText(z.stage.name, z.x + z.w/2, z.y + 6*DPR);
+    }
+
+    // Words
+    for (const w of words){
+      ctx.save();
+      ctx.translate(w.x, w.y);
+
+      const age = (performance.now() - w.born) / 1000;
+      const bob = Math.sin(age * 3.4) * 2.0 * DPR;
+
+      const isDrag = (w === dragging);
+      const fontSize = isDrag ? 26 : 20;
+      ctx.font = `${isDrag ? '900' : '800'} ${fontSize*DPR}px ui-monospace, monospace`;
+      ctx.textAlign = 'center';
+
+      const color = (w.kind === 'power') ? w.power.color : w.stage.color;
+      ctx.fillStyle = color;
+
+      ctx.lineWidth = 4*DPR;
+      ctx.strokeStyle = 'rgba(0,0,0,0.50)';
+      ctx.strokeText(w.text, 0, bob);
+      ctx.fillText(w.text, 0, bob);
+
+      if (isDrag){
+        ctx.globalAlpha = 0.22;
+        ctx.fillText(w.text, -10*DPR, bob - 10*DPR);
+      }
+      ctx.restore();
+    }
+
+    // Particles
+    for (const p of particles){
+      ctx.save();
+      ctx.globalAlpha = clamp(p.life, 0, 1);
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI*2);
+      ctx.fill();
+      if (p.bubble){
+        ctx.strokeStyle = p.color;
+        ctx.lineWidth = 1*DPR;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // Flash
+    if (flash > 0.01){
+      ctx.save();
+      ctx.globalAlpha = flash;
+      ctx.fillStyle = '#ff3b3b';
+      ctx.fillRect(-sx, -sy, W, H);
+      ctx.restore();
+    }
+
+    ctx.restore();
+  }
+
+  function loop(now){
+    const dt = (now - lastNow) / 1000;
+    lastNow = now;
+    update(dt);
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  function init(){
+    resize();
+    const high = Number(localStorage.getItem('teffHigh') || 0);
+    ui.high.textContent = String(high);
+
+    const seen = localStorage.getItem('teffSeenIntro') === '1';
+    intro.style.display = seen ? 'none' : 'flex';
+
+    reset();
+    running = false;
+    paused = false;
+    setMessage('Hit Start — family is arriving. Finish a batch and keep it stable.');
+    requestAnimationFrame(loop);
+  }
+
   init();
 })();
 </script>
