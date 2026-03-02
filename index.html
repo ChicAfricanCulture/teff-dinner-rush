@@ -1,3 +1,4 @@
+<!-- /index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,8 +8,8 @@
   <style>
     :root{
       --bg:#efe4cf;
-      --ui:rgba(0,0,0,0.86);
-      --ui2:rgba(255,255,255,0.10);
+      --hud:rgba(0,0,0,0.88);
+      --hud2:rgba(255,255,255,0.10);
       --text:#ffffff;
     }
     body{
@@ -18,25 +19,37 @@
     canvas{ display:block; cursor:grab; touch-action:none; }
     canvas:active{ cursor:grabbing; }
 
-    #ui{
-      position:absolute; left:10px; top:10px; z-index:10;
-      background:var(--ui); color:var(--text);
-      padding:12px 14px; border-radius:14px;
-      max-width:min(680px, calc(100vw - 20px));
-      box-shadow:0 14px 40px rgba(0,0,0,0.38);
-      border:1px solid rgba(255,255,255,0.12);
+    /* TOP HUD BAND (does not overlap gameplay because gameplay is bounded below it) */
+    #hud{
+      position:fixed; left:0; top:0; right:0;
+      z-index:10;
+      background:var(--hud); color:var(--text);
+      border-bottom:1px solid rgba(255,255,255,0.12);
+      box-shadow:0 12px 34px rgba(0,0,0,0.35);
       user-select:none;
     }
-    #row1{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    #hudInner{
+      padding:10px 12px;
+      max-width:1100px;
+      margin:0 auto;
+    }
+    #row1{
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+    }
     .pill{
       padding:5px 9px; border-radius:999px;
-      background:var(--ui2);
+      background:var(--hud2);
       border:1px solid rgba(255,255,255,0.10);
+      white-space:nowrap;
     }
-    .label{ opacity:0.9; font-weight:800; }
+    .label{ opacity:0.9; font-weight:900; }
 
-    #barWrap,#readyWrap{
-      margin-top:10px; width:320px; height:12px;
+    #bars{
+      margin-top:8px;
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+    }
+    .barWrap{
+      width:320px; height:12px;
       background:rgba(255,255,255,0.14);
       border-radius:999px; overflow:hidden;
       border:1px solid rgba(255,255,255,0.10);
@@ -44,11 +57,23 @@
     #instabilityBar{ height:100%; width:0%; background:linear-gradient(90deg,#66ff99,#ffd166,#ff4d4d); }
     #readyBar{ height:100%; width:0%; background:linear-gradient(90deg,#7CFC00,#00D4FF); }
 
-    #msg{ margin-top:10px; font-weight:900; letter-spacing:0.2px; line-height:1.25; }
-    #hint{ margin-top:6px; opacity:0.92; font-size:13px; line-height:1.35; }
+    #msg{
+      margin-top:8px;
+      font-weight:900;
+      letter-spacing:0.2px;
+      line-height:1.25;
+    }
+    #hint{
+      margin-top:6px;
+      opacity:0.92;
+      font-size:13px;
+      line-height:1.35;
+    }
 
-    #controls{ margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; }
-
+    #controls{
+      margin-top:10px;
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
     button{
       border:1px solid rgba(255,255,255,0.12);
       border-radius:12px; padding:9px 11px; cursor:pointer;
@@ -60,11 +85,11 @@
     .danger{ background:rgba(255,77,77,0.22); }
     .danger:hover{ background:rgba(255,77,77,0.32); }
 
-    /* Story panel (non-blocking, inside UI) */
+    /* Story panel (non-blocking; inside HUD band) */
     #storyPanel{
-      margin-top:10px;
       display:none;
-      padding:10px 10px;
+      margin-top:10px;
+      padding:10px;
       border-radius:12px;
       background:rgba(255,255,255,0.08);
       border:1px solid rgba(255,255,255,0.10);
@@ -72,77 +97,80 @@
       font-size:13px;
       opacity:0.98;
     }
-    #storyPanel b{ font-weight:900; }
+    #storyPanel b{ font-weight:950; }
 
     #back{
-      position:absolute; top:10px; right:10px; z-index:10;
-      color:#fff; text-decoration:none; background:var(--ui);
+      position:fixed; top:10px; right:10px; z-index:11;
+      color:#fff; text-decoration:none; background:var(--hud);
       padding:9px 11px; border-radius:12px;
       border:1px solid rgba(255,255,255,0.12);
     }
 
     @media (max-width: 420px){
-      #barWrap,#readyWrap{ width:260px; }
-      #ui{ padding:10px 12px; }
+      .barWrap{ width:260px; }
+      #hint{ font-size:12px; }
     }
   </style>
 </head>
 <body>
-  <canvas id="c"></canvas>
+  <a id="back" href="https://github.com/ChicAfricanCulture">← Back</a>
 
-  <div id="ui">
-    <div id="row1">
-      <span class="pill"><span class="label">Wave</span>: <b id="wave">1</b></span>
-      <span class="pill"><span class="label">Score</span>: <b id="score">0</b></span>
-      <span class="pill"><span class="label">High</span>: <b id="high">0</b></span>
-      <span class="pill"><span class="label">Combo</span>: <b id="combo">0</b></span>
-      <span class="pill"><span class="label">Dinner ETA</span>: <b id="time">90</b>s</span>
-      <span class="pill"><span class="label">Batches</span>: <b id="batches">0</b></span>
-    </div>
+  <div id="hud">
+    <div id="hudInner">
+      <div id="row1">
+        <span class="pill"><span class="label">Wave</span>: <b id="wave">1</b></span>
+        <span class="pill"><span class="label">Score</span>: <b id="score">0</b></span>
+        <span class="pill"><span class="label">Combo</span>: <b id="combo">0</b></span>
+        <span class="pill"><span class="label">Dinner ETA</span>: <b id="time">90</b>s</span>
+        <span class="pill"><span class="label">Batches</span>: <b id="batches">0</b></span>
+      </div>
 
-    <div id="barWrap" title="Instability (spoilage/overload)">
-      <div id="instabilityBar"></div>
-    </div>
-    <div id="readyWrap" title="Batch Ready (finish one teff bread batch)">
-      <div id="readyBar"></div>
-    </div>
+      <div id="bars">
+        <div class="barWrap" title="Instability (spoilage/overload)">
+          <div id="instabilityBar"></div>
+        </div>
+        <div class="barWrap" title="Batch Ready (finish one teff bread batch)">
+          <div id="readyBar"></div>
+        </div>
+      </div>
 
-    <div id="msg">Family is arriving. Finish a batch and keep it stable.</div>
-    <div id="hint">
-      Drag texture tags into matching stations. Correct streaks raise your combo multiplier.
-      Mistakes spike instability. At 100, the batch collapses.
-    </div>
+      <div id="msg">Family is arriving. Finish a batch and keep it stable.</div>
+      <div id="hint">
+        Drag texture tags into matching stations. Correct streaks raise your combo multiplier.
+        Mistakes spike instability. At 100, the batch collapses.
+      </div>
 
-    <div id="controls">
-      <button id="btnStart" class="primary">Start</button>
-      <button id="btnRestart">Restart</button>
-      <button id="btnPause">Pause</button>
-      <button id="btnSound">Sound: Off</button>
-      <button id="btnWhy">Why?</button>
-      <button id="btnHard" class="danger">Hard Mode: Off</button>
-    </div>
+      <div id="controls">
+        <button id="btnStart" class="primary">Start</button>
+        <button id="btnRestart">Restart</button>
+        <button id="btnPause">Pause</button>
+        <button id="btnSound">Sound: Off</button>
+        <button id="btnWhy">Why?</button>
+        <button id="btnHard" class="danger">Hard Mode: Off</button>
+      </div>
 
-    <div id="storyPanel">
-      <b>Why you’re doing this:</b><br/>
-      Tonight you’re making teff bread for family dinner—your first time doing it alone.
-      Your mother taught you the feel of the textures. Now you have to keep the process steady under pressure.<br/><br/>
-      <b>Goal:</b> Fill <b>Batch Ready</b> to finish a batch.<br/>
-      <b>Risk:</b> Wrong station raises <b>Instability</b>. At 100, the batch collapses.<br/>
-      <b>Flow:</b> Keep a streak to earn combo multipliers and calm the chaos.
+      <div id="storyPanel">
+        <b>Why you’re doing this:</b><br/>
+        Tonight you’re making teff bread for family dinner—your first time doing it alone.
+        Your mother taught you the feel of the textures. Now you keep the process steady under pressure.<br/><br/>
+        <b>Goal:</b> Fill <b>Batch Ready</b> to finish a batch.<br/>
+        <b>Risk:</b> Wrong station raises <b>Instability</b>. At 100, the batch collapses.<br/>
+        <b>Flow:</b> Keep a streak to earn combo multipliers and calm the chaos.
+      </div>
     </div>
   </div>
 
-  <a id="back" href="https://github.com/ChicAfricanCulture">← Back</a>
+  <canvas id="c"></canvas>
 
 <script>
 (() => {
   const canvas = document.getElementById('c');
   const ctx = canvas.getContext('2d', { alpha: false });
+  const hud = document.getElementById('hud');
 
   const ui = {
     wave: document.getElementById('wave'),
     score: document.getElementById('score'),
-    high: document.getElementById('high'),
     combo: document.getElementById('combo'),
     time: document.getElementById('time'),
     batches: document.getElementById('batches'),
@@ -202,6 +230,10 @@
   let lastNow = 0;
   let hardMode = false;
 
+  // Playfield bounds (prevents UI overlap)
+  let playTop = 0;
+  let playBottom = 0;
+
   // Sound (optional)
   let soundOn = false;
   let audioCtx = null;
@@ -227,6 +259,22 @@
 
   function setMessage(t){ ui.msg.textContent = t; }
 
+  function measurePlayfield() {
+    const rect = hud.getBoundingClientRect();
+    const hudBottomCss = rect.bottom;
+    const hudBottomPx = hudBottomCss * DPR;
+
+    // Top band reserved for HUD + small margin
+    playTop = hudBottomPx + 14 * DPR;
+
+    // Bottom reserved for zones (computed in computeZones), plus margin
+    const zonesTop = zones.length ? Math.min(...zones.map(z => z.y - z.h/2)) : (H - 160*DPR);
+    playBottom = zonesTop - 18 * DPR;
+
+    // Safety clamp (mobile)
+    playBottom = Math.max(playBottom, playTop + 120*DPR);
+  }
+
   function resize(){
     DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
     W = canvas.width = Math.floor(window.innerWidth * DPR);
@@ -234,21 +282,41 @@
     canvas.style.width = window.innerWidth + 'px';
     canvas.style.height = window.innerHeight + 'px';
     computeZones();
+    measurePlayfield();
   }
   window.addEventListener('resize', resize);
 
+  // Mobile-first stations: 1 row on wide screens, 2 rows on narrow screens
   function computeZones(){
     zones = [];
-    const pad = 14 * DPR;
-    const barY = H - 102 * DPR;
-    const zH = 64 * DPR;
+    const pad = 12 * DPR;
+    const zH = 62 * DPR;
+
+    const narrow = (window.innerWidth < 720);
+    const rows = narrow ? 2 : 1;
+
+    const bottomY = H - 84*DPR; // anchor near bottom
+    const rowGap = 10 * DPR;
 
     const count = stages.length;
-    const available = W - pad * (count + 1);
-    const zW = Math.max(120 * DPR, Math.floor(available / count));
-    for (let i=0;i<count;i++){
-      const x = pad + i*(zW + pad);
-      zones.push({ x, y: barY, w: zW, h: zH, stage: stages[i] });
+
+    const layout = rows === 1
+      ? [count]
+      : [3, 2]; // 3 on top, 2 on bottom
+
+    let idx = 0;
+    for (let r = 0; r < layout.length; r++) {
+      const cols = layout[r];
+      const available = W - pad * (cols + 1);
+      const zW = Math.max(120 * DPR, Math.floor(available / cols));
+
+      const rowY = bottomY - (layout.length - 1 - r) * (zH + rowGap);
+      for (let c = 0; c < cols; c++) {
+        const x = pad + c*(zW + pad);
+        zones.push({ x, y: rowY, w: zW, h: zH, stage: stages[idx] });
+        idx++;
+        if (idx >= count) break;
+      }
     }
   }
 
@@ -260,21 +328,18 @@
   }
 
   function spawnWord(type='stage'){
+    const x = rand(110*DPR, W - 110*DPR);
+    const y = rand(playTop + 60*DPR, playBottom - 60*DPR);
+
     if (type === 'power'){
       const p = pick(powerups);
-      return { kind:'power', power:p, text:p.label,
-        x: rand(140*DPR, W - 140*DPR),
-        y: rand(170*DPR, Math.max(180*DPR, H*0.45)),
-        vx: rand(-1.2, 1.2), vy: rand(-1.0, 1.0),
-        born: performance.now()
+      return { kind:'power', power:p, text:p.label, x, y,
+        vx: rand(-1.2, 1.2), vy: rand(-1.0, 1.0), born: performance.now()
       };
     }
     const s = pick(stages);
-    return { kind:'stage', stage:s, text:s.name,
-      x: rand(140*DPR, W - 140*DPR),
-      y: rand(170*DPR, Math.max(180*DPR, H*0.45)),
-      vx: rand(-1.2, 1.2), vy: rand(-1.0, 1.0),
-      born: performance.now()
+    return { kind:'stage', stage:s, text:s.name, x, y,
+      vx: rand(-1.2, 1.2), vy: rand(-1.0, 1.0), born: performance.now()
     };
   }
 
@@ -397,10 +462,7 @@
     running = false;
     paused = false;
     dragging = null;
-    setMessage(reason);
-
-    const prevHigh = Number(localStorage.getItem('teffHigh') || 0);
-    if (score > prevHigh) localStorage.setItem('teffHigh', String(score));
+    setMessage(reason + '  •  Tap to restart');
   }
 
   function reset(){
@@ -409,8 +471,13 @@
     waveClock = 0; slowMo = 0; freeze = 0; sieveCharge = 0;
     shake = 0; flash = 0;
     dragging = null; particles = []; words = [];
+
     ui.instabilityBar.style.width = '0%';
     ui.readyBar.style.width = '0%';
+
+    computeZones();
+    measurePlayfield();
+
     fillWords();
     running = true; paused = false; gameOver = false;
     ui.btnPause.textContent = 'Pause';
@@ -460,7 +527,8 @@
   }
 
   function dropAt(x,y){
-    if (!dragging || gameOver || paused || !running) return;
+    if (!dragging || paused || !running) return;
+
     const z = zoneAt(x,y);
     if (!z){ dragging = null; return; }
 
@@ -487,13 +555,17 @@
   // INPUT
   let pointerDown = false;
 
-  canvas.addEventListener('mousedown', (e) => {
+  function tryPick(p) {
     if (!running || paused || gameOver) return;
-    pointerDown = true;
-    const p = pointerPos(e);
     for (let i=words.length-1;i>=0;i--){
       if (textHit(words[i], p.x, p.y)){ dragging = words[i]; break; }
     }
+  }
+
+  canvas.addEventListener('mousedown', (e) => {
+    if (gameOver) { reset(); return; }
+    pointerDown = true;
+    tryPick(pointerPos(e));
   });
 
   canvas.addEventListener('mousemove', (e) => {
@@ -505,18 +577,14 @@
   window.addEventListener('mouseup', (e) => {
     if (!pointerDown) return;
     pointerDown = false;
-    const p = pointerPos(e);
-    dropAt(p.x, p.y);
+    dropAt(pointerPos(e).x, pointerPos(e).y);
   });
 
   canvas.addEventListener('touchstart', (e) => {
     e.preventDefault();
-    if (!running || paused || gameOver) return;
+    if (gameOver) { reset(); return; }
     pointerDown = true;
-    const p = pointerPos(e);
-    for (let i=words.length-1;i>=0;i--){
-      if (textHit(words[i], p.x, p.y)){ dragging = words[i]; break; }
-    }
+    tryPick(pointerPos(e));
   }, { passive:false });
 
   canvas.addEventListener('touchmove', (e) => {
@@ -535,6 +603,10 @@
     const r = canvas.getBoundingClientRect();
     dropAt((last.clientX - r.left) * (W / r.width), (last.clientY - r.top) * (H / r.height));
   }, { passive:false });
+
+  window.addEventListener('keydown', (e) => {
+    if (gameOver && (e.key === 'Enter' || e.key === ' ')) reset();
+  });
 
   // BUTTONS
   ui.btnStart.addEventListener('click', () => {
@@ -568,6 +640,9 @@
     const show = ui.storyPanel.style.display !== 'block';
     ui.storyPanel.style.display = show ? 'block' : 'none';
     ui.btnWhy.textContent = show ? 'Why? (Hide)' : 'Why?';
+    // Update playfield because HUD height changes when story opens
+    computeZones();
+    measurePlayfield();
   });
 
   ui.btnHard.addEventListener('click', () => {
@@ -576,18 +651,15 @@
     setMessage(hardMode ? 'Hard Mode: tighter perfect drops.' : 'Hard Mode off.');
   });
 
-  // VISUAL RAMP (no outlines; slow color intro)
+  // VISUAL RAMP (slow color intro)
   function stageTone(stageColor){
-    // Wave ramp: 1 = grayscale, 2 = muted, 3+ = full color
     if (wave <= 1) return '#111';
     if (wave === 2) return '#444';
     return stageColor;
   }
-
   function zoneFill(stageColor){
-    // Zones ramp too: wave1 light gray, wave2 muted color, wave3+ full color
     if (wave <= 1) return '#d6d6d6';
-    if (wave === 2) return 'rgba(255,255,255,0.16)'; // base wash; we’ll tint by drawing a translucent overlay
+    if (wave === 2) return '#c8c8c8';
     return stageColor;
   }
 
@@ -610,7 +682,6 @@
     setInstability(dt * (0.7 + wave*0.14 + (hardMode ? 0.25 : 0)));
 
     const chaos = 1 + wave*0.18 + instability*0.012 + (hardMode ? 0.1 : 0);
-
     const mutateChance = (instability > 70) ? (0.012 + wave*0.002) : (instability > 55 ? 0.006 : 0.0);
     if (mutateChance > 0 && Math.random() < mutateChance * dt * 60) mutateRandomWord();
 
@@ -627,9 +698,11 @@
       }
 
       const minX = 40*DPR, maxX = W - 40*DPR;
-      const minY = 120*DPR, maxY = H - 180*DPR;
+      const minY = playTop + 40*DPR, maxY = playBottom - 40*DPR;
+
       if (w.x < minX || w.x > maxX) w.vx *= -1;
       if (w.y < minY || w.y > maxY) w.vy *= -1;
+
       w.x = clamp(w.x, minX, maxX);
       w.y = clamp(w.y, minY, maxY);
     }
@@ -656,9 +729,6 @@
     ui.time.textContent = String(Math.ceil(timeLeft));
     ui.batches.textContent = String(batchesMade);
 
-    const high = Number(localStorage.getItem('teffHigh') || 0);
-    ui.high.textContent = String(Math.max(high, score));
-
     shake *= 0.90;
     flash *= 0.86;
   }
@@ -673,16 +743,15 @@
     ctx.save();
     ctx.translate(sx, sy);
 
-    // Zones
+    // Zones (bottom)
     for (const z of zones){
-      const fill = zoneFill(z.stage.color);
-      ctx.fillStyle = fill;
+      ctx.fillStyle = zoneFill(z.stage.color);
       ctx.fillRect(z.x, z.y - z.h/2, z.w, z.h);
 
-      // Wave 2: tint overlay (subtle introduction of color)
+      // Wave 2: subtle tint overlay (slow color intro)
       if (wave === 2){
         ctx.save();
-        ctx.globalAlpha = 0.22;
+        ctx.globalAlpha = 0.18;
         ctx.fillStyle = z.stage.color;
         ctx.fillRect(z.x, z.y - z.h/2, z.w, z.h);
         ctx.restore();
@@ -690,8 +759,6 @@
 
       ctx.textAlign = 'center';
       ctx.font = `900 ${16*DPR}px ui-monospace, monospace`;
-
-      // High contrast label without “outline stroke”
       ctx.fillStyle = (wave <= 1) ? '#111' : '#fff';
       ctx.shadowColor = 'rgba(0,0,0,0.45)';
       ctx.shadowBlur = 6 * DPR;
@@ -699,7 +766,7 @@
       ctx.shadowBlur = 0;
     }
 
-    // Words
+    // Words (restricted to playfield; no outlines)
     for (const w of words){
       ctx.save();
       ctx.translate(w.x, w.y);
@@ -712,17 +779,13 @@
       ctx.font = `${isDrag ? '900' : '800'} ${fontSize*DPR}px ui-monospace, monospace`;
       ctx.textAlign = 'center';
 
-      // Powerups can stay colored (they’re “special tokens”)
       let color = '#111';
-      if (w.kind === 'power') color = w.power.color;
-      else color = stageTone(w.stage.color);
+      if (w.kind === 'power') color = w.power.color;   // powerups stay colored
+      else color = stageTone(w.stage.color);          // slow color ramp
 
       ctx.fillStyle = color;
-
-      // Soft shadow for readability (not an outline)
       ctx.shadowColor = 'rgba(0,0,0,0.35)';
       ctx.shadowBlur = 5 * DPR;
-
       ctx.fillText(w.text, 0, bob);
 
       if (isDrag){
@@ -730,7 +793,6 @@
         ctx.shadowBlur = 0;
         ctx.fillText(w.text, -10*DPR, bob - 10*DPR);
       }
-
       ctx.restore();
     }
 
@@ -750,12 +812,49 @@
       ctx.restore();
     }
 
+    // Big urgency cue (center) so you don’t have to read the HUD constantly
+    if (running && !paused && !gameOver){
+      if (timeLeft <= 15){
+        ctx.save();
+        ctx.globalAlpha = 0.55;
+        ctx.fillStyle = '#000';
+        ctx.font = `900 ${26*DPR}px ui-monospace, monospace`;
+        ctx.textAlign = 'center';
+        ctx.fillText(`DINNER IN ${Math.ceil(timeLeft)}s`, W/2, playTop + 60*DPR);
+        ctx.restore();
+      } else if (instability >= 75){
+        ctx.save();
+        ctx.globalAlpha = 0.35;
+        ctx.fillStyle = '#000';
+        ctx.font = `900 ${22*DPR}px ui-monospace, monospace`;
+        ctx.textAlign = 'center';
+        ctx.fillText('⚠ HOLD THE TEXTURE ⚠', W/2, playTop + 60*DPR);
+        ctx.restore();
+      }
+    }
+
     // Flash overlay
     if (flash > 0.01){
       ctx.save();
       ctx.globalAlpha = flash;
       ctx.fillStyle = '#ff3b3b';
       ctx.fillRect(-sx, -sy, W, H);
+      ctx.restore();
+    }
+
+    // Game over prompt
+    if (gameOver){
+      ctx.save();
+      ctx.globalAlpha = 0.80;
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.font = `900 ${30*DPR}px ui-monospace, monospace`;
+      ctx.fillText('TRY AGAIN', W/2, H/2 - 20*DPR);
+      ctx.font = `800 ${18*DPR}px ui-monospace, monospace`;
+      ctx.fillText('Tap / Click to restart', W/2, H/2 + 18*DPR);
       ctx.restore();
     }
 
@@ -772,9 +871,6 @@
 
   function init(){
     resize();
-    const high = Number(localStorage.getItem('teffHigh') || 0);
-    ui.high.textContent = String(high);
-
     reset();
     running = false;
     paused = false;
