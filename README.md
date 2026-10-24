@@ -1,40 +1,26 @@
 # Teff Dinner Rush (Teff Texture Trap)
 
-A minimal-asset, arcade-chaos “mind game” about teff textures—built as a single `index.html` file for an African food archive.
+You're making teff bread for family dinner. Texture tags float around the kitchen: Whole, Cracked, Coarse, Fine and Batter. Sort them into the right stations to finish a batch before the family arrives.
 
-Play it here: https://chicafricanculture.github.io/teff-dinner-rush/
+**▶ Play it here: [https://chicafricanculture.github.io/teff-dinner-rush/](https://chicafricanculture.github.io/teff-dinner-rush/)**
 
-## What it is
-**Teff Dinner Rush** disguises a texture lesson inside a fast, pressure-based game loop.
-
-You’re making teff bread for family dinner. Texture tags fly in under chaos. Your job is to keep the batch stable and finish it in time—without the batch collapsing.
-
-No images. No libraries. No build steps. Just one file.
+A free game from [The African Gourmet](https://www.theafricangourmet.com/), made to help people learn about African food through play.
 
 ## How to play
-- **Drag** a floating texture tag (Whole / Cracked / Coarse / Fine / Batter)
-- **Drop** it into the matching station at the bottom
-- Correct drops **stabilize** the batch and fill **Batch Ready**
-- Wrong drops spike **Instability**
-- If **Instability hits 100** → batch collapses
-- If the **Dinner ETA timer hits 0** → family arrives
 
-### Win condition (the “why”)
-Fill the **Batch Ready** bar to complete a batch.
-Complete more batches before the timer ends to push your score higher.
+- Drag a floating texture tag and drop it on the matching station at the bottom. This works with a mouse or touch.
+- Correct drops fill **Batch Ready** and build your combo.
+- Wrong drops raise **Instability**. At 100, the batch collapses.
+- Finish as many batches as you can before the Dinner ETA timer reaches zero.
+- Use **Pause**, **Sound**, **Why?** for the story, and **Hard Mode** for an extra challenge.
 
+## More from The African Gourmet
 
-## Controls
-- Mouse: click + drag
-- Touch: tap + drag
+- [More African food stories at The African Gourmet](https://www.theafricangourmet.com/)
+- [More games to play and learn](https://www.theafricangourmet.com/p/play-learn-african-food-games.html)
 
-## Tech
-- Single-file HTML + Canvas 2D
-- Optional WebAudio (no external assets)
-- High score saved in `localStorage`
+---
 
-## Run locally
-Just open `index.html` in a browser.
+Maintained by [The African Gourmet](https://www.theafricangourmet.com/).
 
-## Credits
-Created for the SankofaKitchen / ChicAfricanCulture archive to prove African food belongs in the game space too.
+MIT License, see [LICENSE](LICENSE).
